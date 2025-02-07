@@ -1,88 +1,80 @@
 package com.reservation.servlet;
 
-import com.reservation.dao.UserDAO;
-import com.reservation.model.User;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.List;
+import java.io.InputStream;
+import java.sql.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
+// Enable file uploads
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10,      // 10MB
+        maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 public class UserServlet extends HttpServlet {
-    private UserDAO userDAO;
+    private static final String UPLOAD_DIR = "uploads";
 
-    @Override
-    public void init() throws ServletException {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mega_city_cab", "root", "password");
-            userDAO = new UserDAO(connection);
-        } catch (SQLException e) {
-            throw new ServletException(e);
-        }
-    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            List<User> users = userDAO.getAllUsers();
-            request.setAttribute("users", users);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/userList.jsp");
-            dispatcher.forward(request, response);
-        } catch (SQLException e) {
-            throw new ServletException(e);
-        }
-    }
+        String fullName = request.getParameter("full_name");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password"); // Hash it before storing
+        String phone = request.getParameter("phone");
+        String role = request.getParameter("role");
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+        Part filePart = request.getPart("profile_picture");
+        String fileName = filePart.getSubmittedFileName();
+        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdir();
+
+        String filePath = uploadPath + File.separator + fileName;
+        filePart.write(filePath);
+
+        // Database connection
+        Connection conn = null;
+        PreparedStatement pstmt = null;
 
         try {
-            switch (action) {
-                case "add":
-                    addUser(request, response);
-                    break;
-                case "update":
-                    updateUser(request, response);
-                    break;
-                case "delete":
-                    deleteUser(request, response);
-                    break;
-                default:
-                    doGet(request, response);
-                    break;
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mega_city_cab", "root", "password");
+
+            String sql = "INSERT INTO users (full_name, username, email, password_hash, phone, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, fullName);
+            pstmt.setString(2, username);
+            pstmt.setString(3, email);
+            pstmt.setString(4, password); // Use hashing
+            pstmt.setString(5, phone);
+            pstmt.setString(6, role);
+            pstmt.setString(7, UPLOAD_DIR + "/" + fileName);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                response.sendRedirect("add_user.jsp?success=1");
+            } else {
+                response.sendRedirect("add_user.jsp?error=1");
             }
-        } catch (SQLException e) {
-            throw new ServletException(e);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("add_user.jsp?error=2");
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
-    }
-
-    private void addUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        String username = request.getParameter("username");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        User newUser = new User(0, username, email, password);
-        userDAO.addUser(newUser);
-        response.sendRedirect("user");
-    }
-
-    private void updateUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String username = request.getParameter("username");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        User user = new User(id, username, email, password);
-        userDAO.updateUser(user);
-        response.sendRedirect("user");
-    }
-
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        userDAO.deleteUser(id);
-        response.sendRedirect("user");
     }
 }

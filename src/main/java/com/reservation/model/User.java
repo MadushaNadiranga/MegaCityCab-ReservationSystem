@@ -1,66 +1,51 @@
 package com.reservation.model;
 
-
 public class User {
-    private int id;
+    private String fullName;
     private String username;
-    private String password;
-    private String role; // e.g., admin, employee
+    private String email;
+    private String passwordHash;
+    private String phone;
+    private String role;
+    private String profilePicture;
 
     // Constructor
-    public User(int id, String username, String password, String role) {
-        this.id = id;
+    public User(String fullName, String username, String email, String passwordHash, String phone, String role, String profilePicture) {
+        this.fullName = fullName;
         this.username = username;
-        this.password = password;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.phone = phone;
         this.role = role;
+        this.profilePicture = profilePicture;
     }
 
-    // Overloaded constructor without ID (for new users before saving to DB)
-    public User(String username, String password, String role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    // Getters
+    public String getFullName() {
+        return fullName;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getPhone() {
+        return phone;
     }
 
     public String getRole() {
         return role;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", role='" + role + '\'' +
-                '}';
+    public String getProfilePicture() {
+        return profilePicture;
     }
 }
