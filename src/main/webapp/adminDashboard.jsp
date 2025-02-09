@@ -21,7 +21,7 @@
 
     </ul>
         <div class="logout">
-            <a href="logout.jsp">Logout</a>
+            <a href="mainPage.jsp">Logout</a>
         </div>
 </div>
 
