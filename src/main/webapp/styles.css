@@ -1,4 +1,12 @@
 /* MAIN PAGE */
+@font-face {
+    font-family: 'Quakiez'; /* Name your font family */
+    src: url('assets/font/Quakiez.ttf'); /* Locate the .ttf file within your directory*/
+}
+@font-face {
+    font-family: 'Ailerons.otf'; /* Name your font family */
+    src: url('assets/font/Ailerons.otf'); /* Locate the .ttf file within your directory*/
+}
 
 * {
     margin: 0;
@@ -39,11 +47,13 @@ body {
 h1 {
     font-size: 3rem;
     text-shadow: 2px 2px 5px black;
+    font-family: 'Quakiez', sans-serif;;
 }
 
 p {
     font-size: 1.5rem;
     margin-top: 10px;
+    font-family: 'Ailerons', sans-serif; /* Use the font family */
 }
 
 .btn {
@@ -57,6 +67,7 @@ p {
     border-radius: 5px;
     text-decoration: none;
     transition: 0.3s;
+    font-family: 'Ailerons', sans-serif;
 }
 
 .btn:hover {

@@ -1,4 +1,14 @@
 /* Reset Default Styles */
+@font-face {
+    font-family: 'Quakiez'; /* Name your font family */
+    src: url('assets/font/Quakiez.ttf'); /* Locate the .ttf file within your directory*/
+}
+
+@font-face {
+    font-family: 'times_new_roman'; /* Name your font family */
+    src: url('assets/font/times_new_roman.ttf'); /* Locate the .ttf file within your directory*/
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -37,9 +47,10 @@ body {
 }
 
 .sidebar h2 {
-    color: #fff;
+    color: gold;
     margin-bottom: 20px;
     text-align: center;
+    font-family: 'Quakiez', sans-serif;
 }
 
 /* Sidebar Navigation */
@@ -63,8 +74,10 @@ body {
 
 .sidebar ul li a {
     text-decoration: none;
-    color: #fff;
+    color: #FFFDD0;
     display: block;
+    text-align: center;
+    font-family: 'times_new_roman', sans-serif;
 }
 .sidebar .logout {
     margin-top: auto; /* Push to the bottom */
@@ -231,4 +244,18 @@ header {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
     color: white;
+}
+
+h1{
+    font-family: 'times_new_roman', sans-serif;
+    color: #FFFDD0;
+}
+
+h3{
+    font-family: 'times_new_roman', sans-serif;
+    color: #FFFDD0;
+}
+p{
+    font-family: 'times_new_roman', sans-serif;
+    color: #FFFDD0;
 }

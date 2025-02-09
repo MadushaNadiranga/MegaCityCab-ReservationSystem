@@ -13,11 +13,14 @@
 <div class="sidebar">
     <h2>MegaCityCab</h2>
     <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Bookings</a></li>
-        <li><a href="#">Drivers</a></li>
-        <li><a href="#">Customers</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="#">ADD USERS</a></li>
+        <li><a href="#">ADD VEHICLES</a></li>
+        <li><a href="#">ADD BOOKINGS</a></li>
+        <li><a href="#">MANAGE BOOKINGS</a></li>
+        <li><a href="#">MANAGE DRIVERS</a></li>
+        <li><a href="#">MANAGE VEHICLES</a></li>
+        <li><a href="#">MANAGE CUSTOMERS</a></li>
+        <li><a href="#">REPORTS</a></li>
 
     </ul>
         <div class="logout">
@@ -27,16 +30,16 @@
 
 <div class="main-content">
     <header>
-        <h1>Dashboard</h1>
+        <h1>DASHBOARD</h1>
     </header>
 
     <div class="stats">
         <div class="card">
-            <h3>Total Sales</h3>
-            <p>$12,784</p>
+            <h3>Total Income</h3>
+            <p>Rs.1,112,784</p>
         </div>
         <div class="card">
-            <h3>Total Orders</h3>
+            <h3>Total Bookings</h3>
             <p>28,834</p>
         </div>
         <div class="card">
@@ -44,7 +47,7 @@
             <p>2,876</p>
         </div>
         <div class="card">
-            <h3>Visitors</h3>
+            <h3>Customers</h3>
             <p>18,896</p>
         </div>
     </div>
