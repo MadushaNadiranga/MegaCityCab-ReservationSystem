@@ -4,17 +4,17 @@ public class User {
     private String fullName;
     private String username;
     private String email;
-    private String passwordHash;
+    private String password;
     private String phone;
     private String role;
     private String profilePicture;
 
     // Constructor
-    public User(String fullName, String username, String email, String passwordHash, String phone, String role, String profilePicture) {
+    public User(String fullName, String username, String email, String password, String phone, String role, String profilePicture) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password; // No hashing
         this.phone = phone;
         this.role = role;
         this.profilePicture = profilePicture;
@@ -33,8 +33,8 @@ public class User {
         return email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password; // No hashing
     }
 
     public String getPhone() {

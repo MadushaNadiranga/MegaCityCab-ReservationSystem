@@ -13,7 +13,7 @@
 <div class="sidebar">
     <h2>MegaCityCab</h2>
     <ul>
-        <li><a href="#">ADD USERS</a></li>
+        <li><a href="addUsers.jsp">ADD USERS</a></li>
         <li><a href="#">ADD VEHICLES</a></li>
         <li><a href="#">ADD BOOKINGS</a></li>
         <li><a href="#">MANAGE BOOKINGS</a></li>

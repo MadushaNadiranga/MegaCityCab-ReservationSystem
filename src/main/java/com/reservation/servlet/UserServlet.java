@@ -2,14 +2,16 @@ package com.reservation.servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 // Enable file uploads
 @MultipartConfig(
@@ -27,7 +29,7 @@ public class UserServlet extends HttpServlet {
         String fullName = request.getParameter("full_name");
         String username = request.getParameter("username");
         String email = request.getParameter("email");
-        String password = request.getParameter("password"); // Hash it before storing
+        String password = request.getParameter("password"); // No hashing
         String phone = request.getParameter("phone");
         String role = request.getParameter("role");
 
@@ -48,26 +50,26 @@ public class UserServlet extends HttpServlet {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mega_city_cab", "root", "password");
 
-            String sql = "INSERT INTO users (full_name, username, email, password_hash, phone, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO users (full_name, username, email, password, phone, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, fullName);
             pstmt.setString(2, username);
             pstmt.setString(3, email);
-            pstmt.setString(4, password); // Use hashing
+            pstmt.setString(4, password); // No hashing
             pstmt.setString(5, phone);
             pstmt.setString(6, role);
             pstmt.setString(7, UPLOAD_DIR + "/" + fileName);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
-                response.sendRedirect("add_user.jsp?success=1");
+                response.sendRedirect("addUsers.jsp?success=1");
             } else {
-                response.sendRedirect("add_user.jsp?error=1");
+                response.sendRedirect("addUsers.jsp?error=1");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("add_user.jsp?error=2");
+            response.sendRedirect("addUsers.jsp?error=2");
         } finally {
             try {
                 if (pstmt != null) pstmt.close();
