@@ -16,7 +16,7 @@
 <div class="content">
     <h1>Welcome to MegaCityCab</h1>
     <p>Your trusted online cab reservation system</p>
-    <a href="adminDashboard.jsp" class="btn">Get Started</a>
+    <a href="loginPage.jsp" class="btn">Get Started</a>
 </div>
 </body>
 </html>

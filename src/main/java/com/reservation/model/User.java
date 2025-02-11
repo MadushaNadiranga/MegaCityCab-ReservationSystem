@@ -9,18 +9,16 @@ public class User {
     private String role;
     private String profilePicture;
 
-    // Constructor
     public User(String fullName, String username, String email, String password, String phone, String role, String profilePicture) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
-        this.password = password; // No hashing
+        this.password = password;
         this.phone = phone;
         this.role = role;
         this.profilePicture = profilePicture;
     }
 
-    // Getters
     public String getFullName() {
         return fullName;
     }
@@ -34,7 +32,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password; // No hashing
+        return password;
     }
 
     public String getPhone() {
@@ -48,4 +46,6 @@ public class User {
     public String getProfilePicture() {
         return profilePicture;
     }
+
+
 }

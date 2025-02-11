@@ -10,10 +10,8 @@ public class DatabaseConnection {
     private static final String PASSWORD = "abc123?sql";
     private static Connection connection;
 
-    // Private constructor to prevent instantiation
     private DatabaseConnection() {}
 
-    // Get a single instance of the database connection
     public static Connection getConnection() {
         if (connection == null) {
             try {
@@ -28,7 +26,6 @@ public class DatabaseConnection {
         return connection;
     }
 
-    // Close connection (optional)
     public static void closeConnection() {
         if (connection != null) {
             try {
