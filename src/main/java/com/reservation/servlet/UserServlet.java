@@ -2,10 +2,6 @@ package com.reservation.servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-// Enable file uploads
+import com.reservation.dao.UserDAO;
+import com.reservation.model.User;
+
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10,      // 10MB
@@ -29,10 +27,11 @@ public class UserServlet extends HttpServlet {
         String fullName = request.getParameter("full_name");
         String username = request.getParameter("username");
         String email = request.getParameter("email");
-        String password = request.getParameter("password"); // No hashing
+        String password = request.getParameter("password");
         String phone = request.getParameter("phone");
         String role = request.getParameter("role");
 
+        // Handle file upload
         Part filePart = request.getPart("profile_picture");
         String fileName = filePart.getSubmittedFileName();
         String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
@@ -42,41 +41,20 @@ public class UserServlet extends HttpServlet {
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
-        // Database connection
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        // Store only the relative path
+        String profilePicturePath = UPLOAD_DIR + "/" + fileName;
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mega_city_cab", "root", "password");
+        // Create User Object
+        User user = new User(fullName, username, email, password, phone, role, profilePicturePath);
 
-            String sql = "INSERT INTO users (full_name, username, email, password, phone, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, fullName);
-            pstmt.setString(2, username);
-            pstmt.setString(3, email);
-            pstmt.setString(4, password); // No hashing
-            pstmt.setString(5, phone);
-            pstmt.setString(6, role);
-            pstmt.setString(7, UPLOAD_DIR + "/" + fileName);
+        // Save user using UserDAO
+        UserDAO userDAO = new UserDAO();
+        boolean success = userDAO.addUser(user);
 
-            int rowsInserted = pstmt.executeUpdate();
-            if (rowsInserted > 0) {
-                response.sendRedirect("addUsers.jsp?success=1");
-            } else {
-                response.sendRedirect("addUsers.jsp?error=1");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("addUsers.jsp?error=2");
-        } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+        if (success) {
+            response.sendRedirect("addUsers.jsp?success=1");
+        } else {
+            response.sendRedirect("addUsers.jsp?error=1");
         }
     }
 }
