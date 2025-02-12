@@ -23,6 +23,24 @@
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>DriverServlet</servlet-name>
+        <servlet-class>com.reservation.servlet.DriverServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DriverServlet</servlet-name>
+        <url-pattern>/DriverServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VehicleServlet</servlet-name>
+        <servlet-class>com.reservation.servlet.VehicleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VehicleServlet</servlet-name>
+        <url-pattern>/VehicleServlet</url-pattern>
+    </servlet-mapping>
+
 </web-app>
 
 

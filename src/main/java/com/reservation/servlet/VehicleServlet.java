@@ -1,7 +1,7 @@
 package com.reservation.servlet;
 
-import com.reservation.dao.UserDAO;
-import com.reservation.model.User;
+import com.reservation.dao.VehicleDAO;
+import com.reservation.model.Vehicle;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -14,20 +14,20 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 
-@WebServlet("/addUsers")
+@WebServlet("/addVehicle")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10,      // 10MB
         maxRequestSize = 1024 * 1024 * 50    // 50MB
 )
-public class UserServlet extends HttpServlet {
-    private static final String UPLOAD_DIR = "uploads";
-    private UserDAO userDAO;
+public class VehicleServlet extends HttpServlet {
+    private static final String UPLOAD_DIR = "uploads/vehicles";
+    private VehicleDAO vehicleDAO;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        userDAO = new UserDAO();
+        vehicleDAO = new VehicleDAO();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -35,14 +35,12 @@ public class UserServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try {
-            String fullName = request.getParameter("full_name");
-            String username = request.getParameter("username");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String phone = request.getParameter("phone");
-            String role = request.getParameter("role");
+            String model = request.getParameter("model");
+            int year = Integer.parseInt(request.getParameter("year"));
+            String licensePlate = request.getParameter("license_plate");
+            String status = request.getParameter("status");
 
-            Part filePart = request.getPart("profile_picture");
+            Part filePart = request.getPart("vehicle_image");
             String fileName = filePart.getSubmittedFileName();
             String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
 
@@ -52,17 +50,17 @@ public class UserServlet extends HttpServlet {
             String filePath = uploadPath + File.separator + fileName;
             filePart.write(filePath);
 
-            User user = new User(fullName, username, email, password, phone, role, UPLOAD_DIR + "/" + fileName);
+            Vehicle vehicle = new Vehicle(model, year, licensePlate, status, UPLOAD_DIR + "/" + fileName);
 
-            boolean success = userDAO.addUser(user);
+            boolean success = vehicleDAO.addVehicle(vehicle);
             if (success) {
-                response.sendRedirect("addUsers.jsp?success=1");
+                response.sendRedirect("addVehicle.jsp?success=1");
             } else {
-                response.sendRedirect("addUsers.jsp?error=1");
+                response.sendRedirect("addVehicle.jsp?error=1");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("addUsers.jsp?error=1");
+            response.sendRedirect("addVehicle.jsp?error=1");
         }
     }
 }

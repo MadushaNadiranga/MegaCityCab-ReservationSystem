@@ -13,15 +13,15 @@ public class DatabaseConnection {
     private DatabaseConnection() {}
 
     public static Connection getConnection() {
-        if (connection == null) {
-            try {
+        try {
+            if (connection == null || connection.isClosed()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 System.out.println("Database connected successfully!");
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error connecting to the database", e);
             }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error connecting to the database", e);
         }
         return connection;
     }

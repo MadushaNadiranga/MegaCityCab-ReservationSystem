@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/loginServlet")
+@WebServlet("/loginPage")
 public class LoginServlet extends HttpServlet {
 
     private UserDAO userDAO;
@@ -25,17 +25,23 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Get username and password from the form
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        // Get the user from the database by username
         User user = userDAO.getUserByUsername(username);
 
         if (user != null && HashUtil.hashPassword(password).equals(user.getPassword())) {
+            // User exists and password matches
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);
+            session.setAttribute("user", user); // Store user object in session
+
+            // Redirect to the dashboard page
             response.sendRedirect("adminDashboard.jsp");
         } else {
-            response.sendRedirect("loginPage.jsp?error=1");
+            // Incorrect username or password
+            response.sendRedirect("loginPage.jsp?error=1"); // Error message for invalid credentials
         }
     }
 }
