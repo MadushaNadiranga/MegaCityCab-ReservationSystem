@@ -14,7 +14,7 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 
-@WebServlet("/addVehicle")
+@WebServlet("/manageVehicles")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10,      // 10MB
@@ -26,7 +26,6 @@ public class VehicleServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        super.init();
         vehicleDAO = new VehicleDAO();
     }
 
@@ -34,33 +33,55 @@ public class VehicleServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+        String action = request.getParameter("action");
+
         try {
-            String model = request.getParameter("model");
-            int year = Integer.parseInt(request.getParameter("year"));
-            String licensePlate = request.getParameter("license_plate");
-            String status = request.getParameter("status");
+            if ("add".equals(action)) {
+                // Add Vehicle
+                String model = request.getParameter("model");
+                int year = Integer.parseInt(request.getParameter("year"));
+                String licensePlate = request.getParameter("license_plate");
+                String status = request.getParameter("status");
 
-            Part filePart = request.getPart("vehicle_image");
-            String fileName = filePart.getSubmittedFileName();
-            String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+                Part filePart = request.getPart("vehicle_image");
+                String fileName = filePart.getSubmittedFileName();
+                String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
 
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
 
-            String filePath = uploadPath + File.separator + fileName;
-            filePart.write(filePath);
+                String filePath = uploadPath + File.separator + fileName;
+                filePart.write(filePath);
 
-            Vehicle vehicle = new Vehicle(model, year, licensePlate, status, UPLOAD_DIR + "/" + fileName);
+                Vehicle vehicle = new Vehicle(model, year, licensePlate, status, UPLOAD_DIR + "/" + fileName);
+                boolean success = vehicleDAO.addVehicle(vehicle);
+                response.sendRedirect("manageVehicles.jsp?success=" + (success ? "1" : "0"));
 
-            boolean success = vehicleDAO.addVehicle(vehicle);
-            if (success) {
-                response.sendRedirect("addVehicle.jsp?success=1");
+            } else if ("update".equals(action)) {
+                // Update Vehicle
+                int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
+                String model = request.getParameter("model");
+                int year = Integer.parseInt(request.getParameter("year"));
+                String licensePlate = request.getParameter("license_plate");
+                String status = request.getParameter("status");
+
+                Vehicle vehicle = new Vehicle(vehicleId, model, year, licensePlate, status, null);
+                boolean success = vehicleDAO.updateVehicle(vehicle);
+                response.sendRedirect("manageVehicles.jsp?update=" + (success ? "1" : "0"));
+
+            } else if ("delete".equals(action)) {
+                // Delete Vehicle
+                int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
+                boolean success = vehicleDAO.deleteVehicle(vehicleId);
+                response.sendRedirect("manageVehicles.jsp?delete=" + (success ? "1" : "0"));
+
             } else {
-                response.sendRedirect("addVehicle.jsp?error=1");
+                response.sendRedirect("manageVehicles.jsp?error=1");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("addVehicle.jsp?error=1");
+            response.sendRedirect("manageVehicles.jsp?error=1");
         }
     }
 }

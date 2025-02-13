@@ -104,6 +104,7 @@ public class DriverDAO {
         return false;
     }
 
+
     // Delete driver from the database
     public boolean deleteDriver(int driverId) {
         String sql = "DELETE FROM drivers WHERE driver_id = ?";

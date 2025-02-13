@@ -41,6 +41,15 @@
         <url-pattern>/VehicleServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>BookingServlet</servlet-name>
+        <servlet-class>com.reservation.servlet.BookingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookingServlet</servlet-name>
+        <url-pattern>/BookingServlet</url-pattern>
+    </servlet-mapping>
+
 </web-app>
 
 

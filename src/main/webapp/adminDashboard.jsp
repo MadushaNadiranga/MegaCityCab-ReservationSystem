@@ -16,12 +16,11 @@
         <li><a href="addUsers.jsp">ADD USERS</a></li>
         <li><a href="addDriver.jsp">ADD DRIVERS</a></li>
         <li><a href="addVehicle.jsp">ADD VEHICLES</a></li>
-        <li><a href="#">ADD BOOKINGS</a></li>
+        <li><a href="addBooking.jsp">ADD BOOKINGS</a></li>
         <li><a href="manageUsers.jsp">MANAGE USERS</a></li>
-        <li><a href="#">MANAGE BOOKINGS</a></li>
-        <li><a href="#">MANAGE DRIVERS</a></li>
-        <li><a href="#">MANAGE VEHICLES</a></li>
-        <li><a href="#">MANAGE CUSTOMERS</a></li>
+        <li><a href="manageBookings.jsp">MANAGE BOOKINGS</a></li>
+        <li><a href="manageDriver.jsp">MANAGE DRIVERS</a></li>
+        <li><a href="manageVehicles.jsp">MANAGE VEHICLES</a></li>
         <li><a href="#">REPORTS</a></li>
 
     </ul>
