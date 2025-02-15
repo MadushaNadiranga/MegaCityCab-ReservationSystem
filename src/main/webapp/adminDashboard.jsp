@@ -21,7 +21,7 @@
         <li><a href="manageBookings.jsp">MANAGE BOOKINGS</a></li>
         <li><a href="manageDriver.jsp">MANAGE DRIVERS</a></li>
         <li><a href="manageVehicles.jsp">MANAGE VEHICLES</a></li>
-        <li><a href="#">REPORTS</a></li>
+        <li><a href="mainPage.jsp">REPORTS</a></li>
 
     </ul>
         <div class="logout">
