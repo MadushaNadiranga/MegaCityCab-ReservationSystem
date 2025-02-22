@@ -13,6 +13,7 @@
 <div class="sidebar">
     <h2>MegaCityCab</h2>
     <ul>
+        <li><a href="profile.jsp">PROFILE</a></li>
         <li><a href="addUsers.jsp">ADD USERS</a></li>
         <li><a href="addDriver.jsp">ADD DRIVERS</a></li>
         <li><a href="addVehicle.jsp">ADD VEHICLES</a></li>
