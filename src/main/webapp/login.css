@@ -1,4 +1,8 @@
 /* General Styles */
+@font-face {
+    font-family: 'times_new_roman'; /* Name your font family */
+    src: url('assets/font/times_new_roman.ttf'); /* Locate the .ttf file within your directory*/
+}
 * {
     margin: 0;
     padding: 0;
@@ -40,29 +44,38 @@ body {
 }
 
 /* Login Title */
-.login-card h2 {
-    margin-bottom: 20px;
+.login-card h1 {
+    margin-bottom: 5px;
+    font-family: 'times_new_roman', sans-serif;
+    color: #FFFDD0;
+}
+.login-card p {
+    font-family: 'times_new_roman', sans-serif;
+    color: #FFFDD0;
 }
 
 /* Input Group */
 .input-group {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduce space between input fields */
 }
 
 .input-group label {
     display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    text-align: left;
+    font-size: 20px;
+    margin-bottom: 3px; /* Reduce space between label and input */
+    text-align: center;
+    padding: 5px;
+    font-family: 'times_new_roman', sans-serif;
 }
 
 .input-group input {
-    width: 100%;
+    width: 350px;
     padding: 10px;
     border: none;
     border-radius: 5px;
     outline: none;
+    margin-bottom: 15px; /* Reduce space between input fields */
 }
 
 /* Login Button - Centered */
@@ -77,6 +90,8 @@ body {
     cursor: pointer;
     transition: 0.3s;
     margin: auto; /* Centers button */
+    margin-top: 10px; /* Reduce space above button */
+    margin-bottom: 30px; /* Adjust button spacing */
 }
 
 .btn:hover {
@@ -87,4 +102,7 @@ body {
 .login-image {
     width: 60%;
     background: url('assets/loginImg.jpg') no-repeat center center/cover;
+}
+.error-message{
+    color: red;
 }

@@ -38,7 +38,7 @@
             <p>Total Amount: $<%= booking.getTotalAmount() %></p>
             <p>Payment Status: <%= booking.getPaymentStatus() %></p>
 
-            <form action="bookingManagement" method="post">
+            <form action="BookingManagement" method="post">
                 <input type="hidden" name="booking_id" value="<%= booking.getBookingId() %>">
                 <input type="hidden" name="action" value="cancel">
                 <button type="submit" class="cancel-btn">Cancel Booking</button>

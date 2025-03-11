@@ -17,6 +17,7 @@
   <% } %>
 
   <form action="VehicleServlet" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="action" value="add">
     <label>Model:</label>
     <input type="text" name="model" required>
 

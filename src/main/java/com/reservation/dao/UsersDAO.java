@@ -1,17 +1,19 @@
 package com.reservation.dao;
+import java.util.*;
+import java.sql.*;
 
 import com.reservation.model.User;
 import com.reservation.config.DatabaseConnection;
 import com.reservation.util.HashUtil;
-import com.reservation.servlet.UserManagement;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+public class UsersDAO implements IUserDAO {
 
-public class UserDAO implements IUserDAO {
+    // Store users in different collections
+    private List<User> userList = new LinkedList<>(); // Using LinkedList instead of ArrayList
+    private Set<User> userSet = new HashSet<>(); // Ensuring unique users
+    private Map<String, User> userMap = new HashMap<>(); // Store users by username for quick retrieval
 
-    // Add user to the database
+    // Add user to the database and store in collections
     public boolean addUser(User user) {
         String sql = "INSERT INTO users (full_name, username, email, password, phone, role, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -25,7 +27,13 @@ public class UserDAO implements IUserDAO {
             pstmt.setString(6, user.getRole());
             pstmt.setString(7, user.getProfilePicture());
 
-            return pstmt.executeUpdate() > 0;
+            if (pstmt.executeUpdate() > 0) {
+                // Add to collections
+                userList.add(user);
+                userSet.add(user);
+                userMap.put(user.getUsername(), user);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,7 +42,10 @@ public class UserDAO implements IUserDAO {
 
     // Get all users from the database
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
+        userList.clear(); // Clear previous data
+        userSet.clear();
+        userMap.clear();
+
         String sql = "SELECT * FROM users";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -50,16 +61,22 @@ public class UserDAO implements IUserDAO {
                         rs.getString("role"),
                         rs.getString("profile_picture")
                 );
-                users.add(user);
+                userList.add(user);
+                userSet.add(user);
+                userMap.put(user.getUsername(), user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return users;
+        return userList; // Return LinkedList of users
     }
 
-    // Get user by username (used for login)
+    // Get user by username using HashMap for quick lookup
     public User getUserByUsername(String username) {
+        if (userMap.containsKey(username)) {
+            return userMap.get(username);
+        }
+        // If not in map, fetch from database
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -68,7 +85,7 @@ public class UserDAO implements IUserDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getString("full_name"),
                         rs.getString("username"),
                         rs.getString("email"),
@@ -77,6 +94,8 @@ public class UserDAO implements IUserDAO {
                         rs.getString("role"),
                         rs.getString("profile_picture")
                 );
+                userMap.put(username, user); // Store for future lookups
+                return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,7 +103,7 @@ public class UserDAO implements IUserDAO {
         return null; // User not found
     }
 
-    // Update user information in the database
+    // Update user information
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, profile_picture = ? WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -92,20 +111,24 @@ public class UserDAO implements IUserDAO {
 
             pstmt.setString(1, user.getFullName());
             pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, HashUtil.hashPassword(user.getPassword())); // Hash the password before updating
+            pstmt.setString(3, HashUtil.hashPassword(user.getPassword()));
             pstmt.setString(4, user.getPhone());
             pstmt.setString(5, user.getRole());
             pstmt.setString(6, user.getProfilePicture());
             pstmt.setString(7, user.getUsername());
 
-            return pstmt.executeUpdate() > 0;
+            if (pstmt.executeUpdate() > 0) {
+                // Update in collections
+                userMap.put(user.getUsername(), user);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    // Delete user from the database
+    // Delete user
     public boolean deleteUser(String username) {
         String sql = "DELETE FROM users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -113,7 +136,13 @@ public class UserDAO implements IUserDAO {
 
             pstmt.setString(1, username);
 
-            return pstmt.executeUpdate() > 0;
+            if (pstmt.executeUpdate() > 0) {
+                // Remove from collections
+                userMap.remove(username);
+                userList.removeIf(user -> user.getUsername().equals(username));
+                userSet.removeIf(user -> user.getUsername().equals(username));
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

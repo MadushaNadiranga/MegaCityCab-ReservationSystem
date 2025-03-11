@@ -47,6 +47,6 @@ public class UserManagement extends HttpServlet {
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
         userDAO.deleteUser(username);
-        response.sendRedirect("manageUser.jsp");
+        response.sendRedirect("manageUsers.jsp");
     }
 }

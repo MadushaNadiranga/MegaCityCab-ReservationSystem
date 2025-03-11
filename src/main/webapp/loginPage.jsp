@@ -10,8 +10,9 @@
 <div class="login-container">
     <!-- Left Side - Login Form -->
     <div class="login-card">
-        <h2>Login</h2>
-        <form action="LoginServlet" method="POST"> <!-- Update form action to a Servlet endpoint -->
+        <h1>Login</h1>
+        <p>Smart management for Mega City Cab.<br>Sign in to get started!</p>
+        <form action="LoginServlet" method="POST">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>

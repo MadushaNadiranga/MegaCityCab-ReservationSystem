@@ -32,11 +32,11 @@
             <p>Assigned Vehicle: <%= driver.getAssignedVehicleId() != null ? driver.getAssignedVehicleId() : "None" %></p>
             <p>Status: <%= driver.getStatus() %></p>
             <button onclick="toggleEdit(<%= driver.getDriverId() %>)">Edit</button>
-            <a href="deleteDriver?driverId=<%= driver.getDriverId() %>" class="delete-btn">Delete</a>
+            <a href="DriverManagementServlet?driverId=<%= driver.getDriverId() %>" class="delete-btn">Delete</a>
         </div>
 
         <div class="edit-mode" style="display: none;">
-            <form action="updateDriver" method="post">
+            <form action="DriverManagementServlet" method="post">
                 <input type="hidden" name="driverId" value="<%= driver.getDriverId() %>">
                 <input type="text" name="name" value="<%= driver.getName() %>" required>
                 <input type="text" name="phone" value="<%= driver.getPhone() %>" required>

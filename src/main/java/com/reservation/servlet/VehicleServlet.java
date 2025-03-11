@@ -80,8 +80,8 @@ public class VehicleServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("manageVehicles.jsp?error=1");
-        }
+            e.printStackTrace(); // Log this to the server logs
+            response.sendRedirect("manageVehicles.jsp?error=1&message=" + e.getMessage());
+    }
     }
 }
