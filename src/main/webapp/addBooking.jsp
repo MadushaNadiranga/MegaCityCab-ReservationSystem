@@ -15,36 +15,38 @@
     <p class="error">Error adding booking. Please try again.</p>
     <% } %>
 
-    <form action="BookingServlet" method="post">
-        <label>Customer Name:</label>
-        <input type="text" name="customer_name" required>
+    <form action="BookingManagement" method="post">
+        <input type="hidden" name="action" value="add">
 
-        <label>Customer Email:</label>
-        <input type="email" name="customer_email" required>
+        <label for="customer_name">Customer Name:</label>
+        <input type="text" id="customer_name" name="customer_name" required>
 
-        <label>NIC:</label>
-        <input type="text" name="nic" required>
+        <label for="customer_email">Customer Email:</label>
+        <input type="email" id="customer_email" name="customer_email" required>
 
-        <label>Phone:</label>
-        <input type="text" name="phone" required>
+        <label for="nic">NIC:</label>
+        <input type="text" id="nic" name="nic">
 
-        <label>Driver ID:</label>
-        <input type="text" name="driver_id">
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone">
 
-        <label>Vehicle ID:</label>
-        <input type="text" name="vehicle_id">
+        <label for="driver_id">Driver ID:</label>
+        <input type="number" id="driver_id" name="driver_id">
 
-        <label>Pickup Location:</label>
-        <input type="text" name="pickup_location" required>
+        <label for="vehicle_id">Vehicle ID:</label>
+        <input type="number" id="vehicle_id" name="vehicle_id">
 
-        <label>Drop-off Location:</label>
-        <input type="text" name="dropoff_location" required>
+        <label for="pickup_location">Pickup Location:</label>
+        <input type="text" id="pickup_location" name="pickup_location">
 
-        <label>Booking Date and Time:</label>
-        <input type="datetime-local" name="booking_date" required>
+        <label for="dropoff_location">Dropoff Location:</label>
+        <input type="text" id="dropoff_location" name="dropoff_location">
 
-        <label>Total Amount:</label>
-        <input type="text" name="total_amount">
+        <label for="booking_date">Booking Date:</label>
+        <input type="datetime-local" id="booking_date" name="booking_date">
+
+        <label for="total_amount">Total Amount:</label>
+        <input type="text" id="total_amount" name="total_amount">
 
         <label>Payment Status:</label>
         <select name="payment_status" required>
@@ -52,9 +54,8 @@
             <option value="card">Card</option>
         </select>
 
-        <input type="submit" value="Add Booking">
+        <button type="submit">Add Booking</button>
     </form>
-</div>
 
 </body>
 </html>

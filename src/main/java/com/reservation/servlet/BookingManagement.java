@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.reservation.util.EmailUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -23,45 +24,80 @@ public class BookingManagement extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         List<Booking> bookings = bookingDAO.getAllBookings();
         request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("manageBooking.jsp").forward(request, response);
+        request.getRequestDispatcher("manageBookings.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("add".equals(action)) {
-            String customerName = request.getParameter("customer_name");
-            String customerEmail = request.getParameter("customer_email");
-            String nic = request.getParameter("nic");
-            String phone = request.getParameter("phone");
-            int driverId = Integer.parseInt(request.getParameter("driver_id"));
-            int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
-            String pickupLocation = request.getParameter("pickup_location");
-            String dropoffLocation = request.getParameter("dropoff_location");
+        try {
+            if ("add".equals(action)) {
+                String customerName = request.getParameter("customer_name");
+                String customerEmail = request.getParameter("customer_email"); // Get the dynamic email
+                String nic = request.getParameter("nic");
+                String phone = request.getParameter("phone");
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-            LocalDateTime bookingDate = LocalDateTime.parse(request.getParameter("booking_date"), formatter);
+                int driverId = request.getParameter("driver_id").isEmpty() ? 0 : Integer.parseInt(request.getParameter("driver_id"));
+                int vehicleId = request.getParameter("vehicle_id").isEmpty() ? 0 : Integer.parseInt(request.getParameter("vehicle_id"));
 
-            double totalAmount = Double.parseDouble(request.getParameter("total_amount"));
-            String paymentStatus = request.getParameter("payment_status");
+                String pickupLocation = request.getParameter("pickup_location");
+                String dropoffLocation = request.getParameter("dropoff_location");
 
-            Booking booking = new Booking(customerName, customerEmail, nic, phone, driverId, vehicleId, pickupLocation, dropoffLocation, bookingDate, totalAmount, paymentStatus);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                LocalDateTime bookingDate = LocalDateTime.parse(request.getParameter("booking_date"), formatter);
 
-            boolean success = bookingDAO.addBooking(booking);
+                double totalAmount = Double.parseDouble(request.getParameter("total_amount"));
+                String paymentStatus = request.getParameter("payment_status");
 
-            response.sendRedirect("BookingManagement?action=view&added=" + (success ? "1" : "0"));
+                Booking booking = new Booking(customerName, customerEmail, nic, phone, driverId, vehicleId, pickupLocation, dropoffLocation, bookingDate, totalAmount, paymentStatus);
 
-        } else if ("cancel".equals(action)) {
-            int bookingId = Integer.parseInt(request.getParameter("booking_id"));
-            boolean success = bookingDAO.cancelBooking(bookingId);
-            response.sendRedirect("BookingManagement?action=view&cancel=" + (success ? "1" : "0"));
+                boolean success = bookingDAO.addBooking(booking);
 
-        } else if ("view".equals(action)) {
-            doGet(request, response);
+                if (success) {
+                    // Send confirmation email to customer
+                    String emailSubject = "Booking Confirmation - Your Reservation Details";
+                    String emailBody = "Dear " + customerName + ",\n\n"
+                            + "Thank you for booking with us! Here are your reservation details:\n\n"
+                            + "📌 Pickup Location: " + pickupLocation + "\n"
+                            + "📍 Dropoff Location: " + dropoffLocation + "\n"
+                            + "📅 Booking Date: " + bookingDate + "\n"
+                            + "💰 Total Amount: $" + totalAmount + "\n"
+                            + "💳 Payment Status: " + paymentStatus + "\n\n"
+                            + "We look forward to serving you!\n\n"
+                            + "Best regards,\n"
+                            + "MEGA CITY CAB";
+
+                    try {
+                        EmailUtil.sendEmail(customerEmail, emailSubject, emailBody);
+                        System.out.println("Booking confirmation email sent to: " + customerEmail);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error sending email to: " + customerEmail);
+                    }
+
+                    response.sendRedirect("addBooking.jsp?success=1");
+                } else {
+                    response.sendRedirect("addBooking.jsp?error=1");
+                }
+
+
+            } else if ("cancel".equals(action)) {
+                int bookingId = Integer.parseInt(request.getParameter("booking_id"));
+                boolean success = bookingDAO.cancelBooking(bookingId);
+                response.sendRedirect("BookingManagement?action=view&cancel=" + (success ? "1" : "0"));
+
+            } else if ("view".equals(action)) {
+                doGet(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().write("Error: " + e.getMessage());
         }
     }
 }
